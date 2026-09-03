@@ -1,1 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>KrushiSetu | Best Market</title>
+
+<link rel="stylesheet"
+href="../css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+<div class="logo">
+🌾 KrushiSetu
+</div>
+
+<nav>
+
+<a href="../index.html">
+Home
+</a>
+
+<a href="dashboard.html">
+Dashboard
+</a>
+
+<a href="prices.html">
+Prices
+</a>
+
+<a href="weather.html">
+Weather
+</a>
+
+</nav>
+
+</header>
+
+
+<main class="page-container">
+
+
+<h1>
+📍 Find the Best Market
+</h1>
+
+<p>
+Compare price, distance and transport cost.
+</p>
+
+
+<div class="calculator-card">
+
+
+<label>
+Select Crop
+</label>
+
+<select id="crop">
+
+<option value="3250">
+Onion
+</option>
+
+<option value="2800">
+Tomato
+</option>
+
+<option value="5200">
+Soybean
+</option>
+
+<option value="2300">
+Maize
+</option>
+
+</select>
+
+
+<label>
+Quantity (Quintals)
+</label>
+
+<input
+type="number"
+id="quantity"
+value="10"
+min="1"
+>
+
+
+<button
+onclick="findBestMarket()"
+class="primary-btn">
+
+Find Best Market
+
+</button>
+
+</div>
+
+
+<div id="marketResults">
+
+</div>
+
+
+</main>
+
+
+<script>
+
+
+const markets = [
+
+{
+name: "Nashik APMC",
+distance: 20,
+price: 3250
+},
+
+{
+name: "Pune APMC",
+distance: 90,
+price: 3350
+},
+
+{
+name: "Ahmednagar APMC",
+distance: 70,
+price: 3300
+},
+
+{
+name: "Latur APMC",
+distance: 180,
+price: 3450
+}
+
+];
+
+
+function findBestMarket() {
+
+
+const price =
+Number(
+document.getElementById("crop").value
+);
+
+
+const quantity =
+Number(
+document.getElementById("quantity").value
+);
+
+
+if(quantity <= 0) {
+
+alert(
+"Please enter valid quantity."
+);
+
+return;
+
+}
+
+
+const transportRate = 10;
+
+const results =
+markets.map(market => {
+
+
+const gross =
+price *
+quantity;
+
+
+const transport =
+market.distance *
+transportRate;
+
+
+const otherCharges =
+quantity *
+50;
+
+
+const net =
+gross -
+transport -
+otherCharges;
+
+
+return {
+
+...market,
+
+gross,
+transport,
+otherCharges,
+net
+
+};
+
+});
+
+
+results.sort(
+(a,b) => b.net - a.net
+);
+
+
+const best =
+results[0];
+
+
+let html = `
+
+<div class="best-market">
+
+<h2>
+🏆 Recommended Market
+</h2>
+
+<h3>
+${best.name}
+</h3>
+
+<p>
+Distance:
+${best.distance} km
+</p>
+
+<p>
+Transport Cost:
+₹${best.transport.toLocaleString()}
+</p>
+
+<p>
+Expected Net Realization:
+<strong>
+₹${best.net.toLocaleString()}
+</strong>
+</p>
+
+</div>
+
+
+<h2>
+Market Comparison
+</h2>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Market</th>
+
+<th>Distance</th>
+
+<th>Price</th>
+
+<th>Transport</th>
+
+<th>Net Realization</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+`;
+
+
+results.forEach(market => {
+
+
+html += `
+
+<tr>
+
+<td>
+${market.name}
+</td>
+
+<td>
+${market.distance} km
+</td>
+
+<td>
+₹${price.toLocaleString()}
+</td>
+
+<td>
+₹${market.transport.toLocaleString()}
+</td>
+
+<td>
+<strong>
+₹${market.net.toLocaleString()}
+</strong>
+</td>
+
+</tr>
+
+`;
+
+});
+
+
+html += `
+
+</tbody>
+
+</table>
+
+</div>
+
+<p class="data-note">
+
+⚠️ Transport and other charges are currently
+estimated demonstration values. They will be
+replaced with actual market/transport data.
+
+</p>
+
+`;
+
+
+document.getElementById(
+"marketResults"
+).innerHTML =
+html;
+
+}
+
+
+findBestMarket();
+
+</script>
+
+
+</body>
+</html>
