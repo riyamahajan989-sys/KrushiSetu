@@ -1,417 +1,463 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
+    <title>KrushiSetu | Live Weather</title>
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
 
-<title>KrushiSetu | Crop Prices</title>
+    <style>
+        .weather-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
 
-<link rel="stylesheet"
-href="../css/style.css">
+        .weather-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
 
+        .weather-header h1 {
+            color: #176b36;
+            margin-bottom: 10px;
+        }
+
+        .location-box {
+            background: #f1f8f3;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .weather-button {
+            background: #176b36;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .weather-button:hover {
+            background: #0e5428;
+        }
+
+        .current-weather {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .weather-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.10);
+        }
+
+        .weather-card h3 {
+            color: #176b36;
+            margin-bottom: 10px;
+        }
+
+        .weather-value {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .forecast {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+        }
+
+        .forecast-card {
+            background: #f8fbf8;
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .advisory {
+            margin-top: 30px;
+            background: #fff8dc;
+            border-left: 5px solid #f0b400;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 18px;
+            margin: 25px;
+        }
+
+        .error {
+            color: #b00020;
+            text-align: center;
+            font-weight: bold;
+            margin: 20px;
+        }
+
+        .updated {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 800px) {
+            .current-weather {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .forecast {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .current-weather {
+                grid-template-columns: 1fr;
+            }
+
+            .forecast {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-
 
 <body>
 
-
 <header class="navbar">
+    <div class="logo">🌾 KrushiSetu</div>
 
-<div class="logo">
-🌾 KrushiSetu
-</div>
-
-<nav>
-
-<a href="../index.html">
-Home
-</a>
-
-<a href="dashboard.html">
-Dashboard
-</a>
-
-<a href="markets.html">
-Markets
-</a>
-
-<a href="weather.html">
-Weather
-</a>
-
-</nav>
-
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="prices.html">Prices</a>
+        <a href="markets.html">Markets</a>
+        <a href="weather.html">Weather</a>
+        <a href="profile.html">Profile</a>
+    </nav>
 </header>
 
 
-<main class="page-container">
+<div class="weather-container">
 
-<h1>
-🌾 Current Crop Prices
-</h1>
-
-<p>
-Latest available market information
-</p>
+    <div class="weather-header">
+        <h1>🌤️ Live Weather</h1>
+        <p>Get current weather and forecast for your farming location.</p>
+    </div>
 
 
-<div class="filter-box">
+    <div class="location-box">
 
-<label>
-Select Crop
-</label>
+        <h3>📍 Your Location</h3>
 
-<select id="cropSelect"
-onchange="loadPrices()">
+        <p id="locationText">
+            Click the button below to detect your location.
+        </p>
 
-<option value="onion">
-Onion
-</option>
+        <button class="weather-button" onclick="getLiveWeather()">
+            📍 Detect My Location
+        </button>
 
-<option value="tomato">
-Tomato
-</option>
+        <button class="weather-button" onclick="getLiveWeather()">
+            🔄 Refresh Weather
+        </button>
 
-<option value="soybean">
-Soybean
-</option>
-
-<option value="maize">
-Maize
-</option>
-
-</select>
+    </div>
 
 
-<label>
-Select District
-</label>
+    <div id="loading" class="loading" style="display:none;">
+        ⏳ Getting live weather...
+    </div>
 
-<select id="districtSelect"
-onchange="loadPrices()">
-
-<option>
-Nashik
-</option>
-
-<option>
-Pune
-</option>
-
-<option>
-Ahmednagar
-</option>
-
-<option>
-Latur
-</option>
-
-</select>
-
-</div>
+    <div id="error" class="error"></div>
 
 
-<div class="update-box">
+    <!-- CURRENT WEATHER -->
 
-🔄 Last checked:
+    <div class="current-weather">
 
-<span id="updateTime">
---:--
-</span>
+        <div class="weather-card">
+            <h3>🌡️ Temperature</h3>
+            <div class="weather-value">
+                <span id="temperature">--</span> °C
+            </div>
+        </div>
 
-<button onclick="loadPrices()"
-class="refresh-btn">
+        <div class="weather-card">
+            <h3>💧 Humidity</h3>
+            <div class="weather-value">
+                <span id="humidity">--</span> %
+            </div>
+        </div>
 
-Refresh
+        <div class="weather-card">
+            <h3>🌧️ Rain</h3>
+            <div class="weather-value">
+                <span id="rain">--</span> mm
+            </div>
+        </div>
 
-</button>
+        <div class="weather-card">
+            <h3>💨 Wind</h3>
+            <div class="weather-value">
+                <span id="wind">--</span> km/h
+            </div>
+        </div>
 
-</div>
-
-
-<div class="table-container">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Market</th>
-
-<th>Crop</th>
-
-<th>Price ₹/Quintal</th>
-
-<th>Status</th>
-
-</tr>
-
-</thead>
+    </div>
 
 
-<tbody id="priceTable">
+    <h2>📅 5 Day Forecast</h2>
 
-</tbody>
+    <div class="forecast" id="forecast">
+        <!-- Forecast will appear here -->
+    </div>
 
-</table>
+
+    <div class="advisory">
+
+        <h2>🌾 Farmer Advisory</h2>
+
+        <p id="advisoryText">
+            Weather-based farming advice will appear here.
+        </p>
+
+    </div>
+
+
+    <p class="updated">
+        Last Updated:
+        <span id="lastUpdated">--</span>
+    </p>
 
 </div>
-
-
-<div class="price-summary">
-
-<div>
-<h3>Highest Price</h3>
-
-<p id="highestPrice">
---
-</p>
-</div>
-
-
-<div>
-<h3>Lowest Price</h3>
-
-<p id="lowestPrice">
---
-</p>
-</div>
-
-
-<div>
-<h3>Average Price</h3>
-
-<p id="averagePrice">
---
-</p>
-</div>
-
-</div>
-
-
-<p class="data-note">
-
-⚠️ Market prices displayed here are demonstration
-data until the live government/agricultural market
-data API is connected.
-
-</p>
-
-
-</main>
 
 
 <script>
 
-const marketData = {
+async function getLiveWeather() {
 
-onion: [
+    const loading = document.getElementById("loading");
+    const error = document.getElementById("error");
 
-{
-market: "Nashik APMC",
-price: 3250
-},
+    loading.style.display = "block";
+    error.innerHTML = "";
 
-{
-market: "Pune APMC",
-price: 3180
-},
+    if (!navigator.geolocation) {
 
-{
-market: "Ahmednagar APMC",
-price: 3300
-},
+        loading.style.display = "none";
 
-{
-market: "Latur APMC",
-price: 3050
+        error.innerHTML =
+            "Your browser does not support location services.";
+
+        return;
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        async function(position) {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            try {
+
+                const url =
+                    "https://api.open-meteo.com/v1/forecast" +
+                    "?latitude=" + latitude +
+                    "&longitude=" + longitude +
+                    "&current=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m" +
+                    "&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max" +
+                    "&timezone=auto" +
+                    "&forecast_days=5";
+
+
+                const response = await fetch(url);
+
+                if (!response.ok) {
+                    throw new Error("Weather data unavailable");
+                }
+
+                const data = await response.json();
+
+
+                // CURRENT WEATHER
+
+                document.getElementById("temperature").innerText =
+                    data.current.temperature_2m;
+
+                document.getElementById("humidity").innerText =
+                    data.current.relative_humidity_2m;
+
+                document.getElementById("rain").innerText =
+                    data.current.precipitation;
+
+                document.getElementById("wind").innerText =
+                    data.current.wind_speed_10m;
+
+
+                // LOCATION
+
+                document.getElementById("locationText").innerHTML =
+                    "📍 Latitude: " +
+                    latitude.toFixed(4) +
+                    " | Longitude: " +
+                    longitude.toFixed(4);
+
+
+                // FORECAST
+
+                const forecastContainer =
+                    document.getElementById("forecast");
+
+                forecastContainer.innerHTML = "";
+
+
+                for (let i = 0; i < data.daily.time.length; i++) {
+
+                    const date =
+                        new Date(data.daily.time[i]);
+
+                    const day =
+                        date.toLocaleDateString(
+                            "en-IN",
+                            { weekday: "short" }
+                        );
+
+
+                    const card = document.createElement("div");
+
+                    card.className = "forecast-card";
+
+                    card.innerHTML = `
+
+                        <h3>${day}</h3>
+
+                        <p>🌡️ Max:
+                            <strong>
+                                ${data.daily.temperature_2m_max[i]} °C
+                            </strong>
+                        </p>
+
+                        <p>🌡️ Min:
+                            <strong>
+                                ${data.daily.temperature_2m_min[i]} °C
+                            </strong>
+                        </p>
+
+                        <p>🌧️ Rain:
+                            <strong>
+                                ${data.daily.precipitation_probability_max[i]} %
+                            </strong>
+                        </p>
+
+                    `;
+
+                    forecastContainer.appendChild(card);
+                }
+
+
+                // FARMER ADVISORY
+
+                const rainProbability =
+                    data.daily.precipitation_probability_max[0];
+
+                let advisory = "";
+
+                if (rainProbability >= 70) {
+
+                    advisory =
+                        "🌧️ High possibility of rain. Avoid unnecessary spraying and consider postponing harvesting or transportation of harvested produce.";
+
+                } else if (rainProbability >= 40) {
+
+                    advisory =
+                        "🌦️ Moderate possibility of rain. Monitor weather conditions before spraying, harvesting and transporting your crop.";
+
+                } else {
+
+                    advisory =
+                        "☀️ Low possibility of rain. Weather appears relatively favorable for routine farm activities. Continue monitoring the forecast.";
+
+                }
+
+
+                document.getElementById("advisoryText").innerText =
+                    advisory;
+
+
+                // LAST UPDATED
+
+                document.getElementById("lastUpdated").innerText =
+                    new Date().toLocaleString("en-IN");
+
+
+                loading.style.display = "none";
+
+            }
+
+            catch (err) {
+
+                loading.style.display = "none";
+
+                error.innerHTML =
+                    "❌ Unable to get live weather data. Please try again.";
+
+                console.error(err);
+            }
+
+        },
+
+        function(error) {
+
+            loading.style.display = "none";
+
+            if (error.code === 1) {
+
+                document.getElementById("error").innerHTML =
+                    "📍 Location permission was denied. Please allow location access in your browser.";
+
+            } else {
+
+                document.getElementById("error").innerHTML =
+                    "❌ Unable to detect your location. Please try again.";
+
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+        }
+
+    );
 }
-
-],
-
-
-tomato: [
-
-{
-market: "Nashik APMC",
-price: 2800
-},
-
-{
-market: "Pune APMC",
-price: 2950
-},
-
-{
-market: "Ahmednagar APMC",
-price: 2750
-},
-
-{
-market: "Latur APMC",
-price: 2600
-}
-
-],
-
-
-soybean: [
-
-{
-market: "Nashik APMC",
-price: 5200
-},
-
-{
-market: "Pune APMC",
-price: 5350
-},
-
-{
-market: "Ahmednagar APMC",
-price: 5500
-},
-
-{
-market: "Latur APMC",
-price: 5650
-}
-
-],
-
-
-maize: [
-
-{
-market: "Nashik APMC",
-price: 2300
-},
-
-{
-market: "Pune APMC",
-price: 2400
-},
-
-{
-market: "Ahmednagar APMC",
-price: 2350
-},
-
-{
-market: "Latur APMC",
-price: 2450
-}
-
-]
-
-};
-
-
-function loadPrices() {
-
-const crop =
-document.getElementById("cropSelect").value;
-
-const data =
-marketData[crop];
-
-
-const table =
-document.getElementById("priceTable");
-
-table.innerHTML = "";
-
-
-const prices =
-data.map(item => item.price);
-
-
-const highest =
-Math.max(...prices);
-
-const lowest =
-Math.min(...prices);
-
-const average =
-prices.reduce((a,b) => a+b,0)
-/
-prices.length;
-
-
-data.forEach(item => {
-
-const row =
-document.createElement("tr");
-
-let status =
-"Normal";
-
-if(item.price === highest) {
-
-status =
-"🏆 Highest";
-
-}
-
-
-row.innerHTML = `
-
-<td>${item.market}</td>
-
-<td>
-${crop.toUpperCase()}
-</td>
-
-<td>
-₹${item.price.toLocaleString()}
-</td>
-
-<td>
-${status}
-</td>
-
-`;
-
-table.appendChild(row);
-
-});
-
-
-document.getElementById(
-"highestPrice"
-).innerText =
-"₹" + highest.toLocaleString();
-
-
-document.getElementById(
-"lowestPrice"
-).innerText =
-"₹" + lowest.toLocaleString();
-
-
-document.getElementById(
-"averagePrice"
-).innerText =
-"₹" + Math.round(average).toLocaleString();
-
-
-document.getElementById(
-"updateTime"
-).innerText =
-new Date().toLocaleString();
-
-}
-
-
-loadPrices();
 
 </script>
 
-
 </body>
 </html>
+
+
+
+
+
+
+
+
+
