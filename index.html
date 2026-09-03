@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>KrushiSetu | Smart Farmer Market</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+
+<header class="navbar">
+
+    <div class="logo">
+        🌾 Krushi<span>Setu</span>
+    </div>
+
+    <nav>
+
+        <a href="index.html">Home</a>
+
+        <a href="pages/prices.html">Prices</a>
+
+        <a href="pages/markets.html">Markets</a>
+
+        <a href="pages/weather.html">Weather</a>
+
+        <a href="#about">About</a>
+
+        <button onclick="openLogin()">
+            Login
+        </button>
+
+    </nav>
+
+</header>
+
+
+<!-- HERO SECTION -->
+
+<section id="home" class="hero">
+
+    <div class="hero-content">
+
+        <h1>
+            Sell Your Crop
+            <span>at the Right Market</span>
+        </h1>
+
+        <p>
+            Compare crop prices, transportation costs,
+            weather conditions and market opportunities
+            to maximize your net income.
+        </p>
+
+        <div class="hero-buttons">
+
+            <button class="primary-btn"
+                    onclick="findMarket()">
+
+                🔍 Find Best Market
+
+            </button>
+
+            <button class="secondary-btn"
+                    onclick="getLocation()">
+
+                📍 Detect My Location
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- QUICK SERVICES -->
+
+<section class="services">
+
+    <div class="section-title">
+
+        <h2>Smart Farmer Services</h2>
+
+        <p>
+            Everything you need before selling your crop
+        </p>
+
+    </div>
+
+
+    <div class="service-grid">
+
+
+        <div class="service-card">
+
+            <div class="icon">💰</div>
+
+            <h3>Crop Prices</h3>
+
+            <p>
+                Check today's market prices.
+            </p>
+
+            <button onclick="showPrices()">
+                View Prices
+            </button>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="icon">🏪</div>
+
+            <h3>Best Market</h3>
+
+            <p>
+                Find the most profitable market.
+            </p>
+
+            <button onclick="findMarket()">
+                Find Market
+            </button>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="icon">🚚</div>
+
+            <h3>Transport Cost</h3>
+
+            <p>
+                Calculate transportation expenses.
+            </p>
+
+            <button onclick="transportCalculator()">
+                Calculate
+            </button>
+
+        </div>
+
+
+        <div class="service-card">
+
+            <div class="icon">🌦️</div>
+
+            <h3>Weather</h3>
+
+            <p>
+                Check weather before transportation.
+            </p>
+
+            <button onclick="weatherInfo()">
+                Check Weather
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- MARKET CALCULATOR -->
+
+<section id="markets" class="calculator-section">
+
+    <div class="section-title">
+
+        <h2>⭐ Find Your Best Market</h2>
+
+        <p>
+            Calculate your expected net realization
+        </p>
+
+    </div>
+
+
+    <div class="calculator">
+
+        <label>
+            Select Crop
+        </label>
+
+        <select id="crop">
+
+            <option value="3100">
+                Onion
+            </option>
+
+            <option value="2800">
+                Tomato
+            </option>
+
+            <option value="2300">
+                Maize
+            </option>
+
+            <option value="5200">
+                Soybean
+            </option>
+
+        </select>
+
+
+        <label>
+            Quantity (Quintals)
+        </label>
+
+        <input
+            type="number"
+            id="quantity"
+            value="10"
+            min="1">
+
+
+        <label>
+            Select Market
+        </label>
+
+        <select id="market">
+
+            <option value="20">
+                Nashik APMC
+            </option>
+
+            <option value="90">
+                Pune APMC
+            </option>
+
+            <option value="70">
+                Ahmednagar APMC
+            </option>
+
+            <option value="180">
+                Latur APMC
+            </option>
+
+        </select>
+
+
+        <button
+            class="calculate-btn"
+            onclick="calculateProfit()">
+
+            Calculate Net Realization
+
+        </button>
+
+
+        <div
+            id="result"
+            class="result">
+
+            <h3>
+                🏆 Market Recommendation
+            </h3>
+
+            <p id="resultText">
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PRICE SECTION -->
+
+<section id="prices" class="prices-section">
+
+    <div class="section-title">
+
+        <h2>Today's Crop Prices</h2>
+
+        <p>
+            Sample market information
+        </p>
+
+    </div>
+
+
+    <div class="price-grid">
+
+
+        <div class="price-card">
+
+            <h3>🧅 Onion</h3>
+
+            <strong>
+                ₹3,100/Q
+            </strong>
+
+            <p>
+                Nashik APMC
+            </p>
+
+        </div>
+
+
+        <div class="price-card">
+
+            <h3>🍅 Tomato</h3>
+
+            <strong>
+                ₹2,800/Q
+            </strong>
+
+            <p>
+                Pune APMC
+            </p>
+
+        </div>
+
+
+        <div class="price-card">
+
+            <h3>🌽 Maize</h3>
+
+            <strong>
+                ₹2,300/Q
+            </strong>
+
+            <p>
+                Ahmednagar APMC
+            </p>
+
+        </div>
+
+
+        <div class="price-card">
+
+            <h3>🌱 Soybean</h3>
+
+            <strong>
+                ₹5,200/Q
+            </strong>
+
+            <p>
+                Latur Market
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ABOUT -->
+
+<section id="about" class="about">
+
+    <h2>
+        About KrushiSetu
+    </h2>
+
+    <p>
+
+        KrushiSetu is a smart agricultural decision-support
+        platform designed to help farmers identify the
+        right market, right price and right time to sell
+        their produce.
+
+    </p>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+    <h2>
+        🌾 KrushiSetu
+    </h2>
+
+    <p>
+        Right Market • Right Price • Better Profit
+    </p>
+
+    <p>
+        © 2026 KrushiSetu
+    </p>
+
+</footer>
+
+
+<script src="js/script.js"></script>
+
+</body>
+
+</html>
