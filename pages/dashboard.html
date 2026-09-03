@@ -1,1 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>KrushiSetu | Dashboard</title>
+
+<link rel="stylesheet"
+href="../css/style.css">
+
+</head>
+
+
+<body>
+
+
+<header class="navbar">
+
+<div class="logo">
+🌾 KrushiSetu
+</div>
+
+<nav>
+
+<a href="../index.html">Home</a>
+
+<a href="prices.html">
+Prices
+</a>
+
+<a href="markets.html">
+Markets
+</a>
+
+<a href="weather.html">
+Weather
+</a>
+
+<a href="profile.html">
+Profile
+</a>
+
+</nav>
+
+</header>
+
+
+<main class="dashboard">
+
+<h1>
+👨‍🌾 Farmer Dashboard
+</h1>
+
+<p id="welcome">
+Welcome to KrushiSetu
+</p>
+
+
+<div class="location-box">
+
+<h3>📍 Your Location</h3>
+
+<p id="location">
+Detecting location...
+</p>
+
+<button
+onclick="getLocation()"
+class="secondary-btn">
+
+Detect My Location
+
+</button>
+
+</div>
+
+
+<h2>
+Smart Farmer Services
+</h2>
+
+
+<div class="service-grid">
+
+
+<a href="prices.html"
+class="service-card">
+
+<div class="service-icon">
+🌾
+</div>
+
+<h3>Crop Prices</h3>
+
+<p>
+Check latest available market prices.
+</p>
+
+</a>
+
+
+<a href="markets.html"
+class="service-card">
+
+<div class="service-icon">
+📍
+</div>
+
+<h3>Best Market</h3>
+
+<p>
+Find the market giving better net realization.
+</p>
+
+</a>
+
+
+<a href="weather.html"
+class="service-card">
+
+<div class="service-icon">
+🌦️
+</div>
+
+<h3>Weather</h3>
+
+<p>
+Current weather and forecast.
+</p>
+
+</a>
+
+
+<div class="service-card"
+onclick="transport()">
+
+<div class="service-icon">
+🚜
+</div>
+
+<h3>Transport Cost</h3>
+
+<p>
+Estimate transportation expenses.
+</p>
+
+</div>
+
+
+</div>
+
+
+<section class="dashboard-highlight">
+
+<h2>
+💰 Smart Selling Decision
+</h2>
+
+<p>
+
+KrushiSetu compares crop price,
+distance and transportation cost to
+help you identify a potentially better
+market.
+
+</p>
+
+<a href="markets.html"
+class="primary-btn">
+
+Find Best Market
+
+</a>
+
+</section>
+
+
+</main>
+
+
+<script>
+
+function getLocation() {
+
+if (!navigator.geolocation) {
+
+document.getElementById("location").innerText =
+"Geolocation is not supported.";
+
+return;
+
+}
+
+
+navigator.geolocation.getCurrentPosition(
+
+function(position) {
+
+const lat =
+position.coords.latitude;
+
+const lon =
+position.coords.longitude;
+
+document.getElementById("location").innerText =
+"Latitude: " + lat.toFixed(5) +
+" | Longitude: " + lon.toFixed(5);
+
+},
+
+function() {
+
+document.getElementById("location").innerText =
+"Unable to detect location.";
+
+}
+
+);
+
+}
+
+
+function transport() {
+
+alert(
+"Transport calculator will be connected to the market-distance system."
+);
+
+}
+
+
+getLocation();
+
+</script>
+
+
+</body>
+</html>
