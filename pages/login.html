@@ -1,1 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <title>KrushiSetu | Farmer Login</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+
+    <div class="logo">
+        🌾 KrushiSetu
+    </div>
+
+    <a href="../index.html" class="nav-home">
+        Home
+    </a>
+
+</header>
+
+
+<main class="login-container">
+
+    <div class="login-card">
+
+        <div class="login-icon">
+            👨‍🌾
+        </div>
+
+        <h1>Welcome to KrushiSetu</h1>
+
+        <p>
+            Smart farming information for better selling decisions.
+        </p>
+
+
+        <label>Mobile Number</label>
+
+        <input
+            type="tel"
+            id="mobile"
+            placeholder="Enter 10 digit mobile number"
+            maxlength="10"
+        >
+
+
+        <button onclick="sendOTP()" class="primary-btn">
+            Send OTP
+        </button>
+
+
+        <div id="otpSection" style="display:none;">
+
+            <label>Enter OTP</label>
+
+            <input
+                type="text"
+                id="otp"
+                placeholder="Enter OTP"
+                maxlength="6"
+            >
+
+            <button onclick="verifyOTP()" class="primary-btn">
+                Login
+            </button>
+
+        </div>
+
+
+        <p id="loginMessage"></p>
+
+
+        <div class="language-box">
+
+            <label>Language</label>
+
+            <select id="language">
+
+                <option value="en">
+                    English
+                </option>
+
+                <option value="mr">
+                    मराठी
+                </option>
+
+                <option value="hi">
+                    हिन्दी
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+</main>
+
+
+<script>
+
+function sendOTP() {
+
+    const mobile =
+        document.getElementById("mobile").value;
+
+    if (mobile.length !== 10) {
+
+        document.getElementById("loginMessage").innerText =
+            "Please enter a valid 10 digit mobile number.";
+
+        return;
+    }
+
+    document.getElementById("otpSection").style.display =
+        "block";
+
+    document.getElementById("loginMessage").innerText =
+        "Demo OTP sent. Use 123456.";
+
+}
+
+
+function verifyOTP() {
+
+    const otp =
+        document.getElementById("otp").value;
+
+    if (otp === "123456") {
+
+        localStorage.setItem(
+            "krushiLoggedIn",
+            "true"
+        );
+
+        window.location.href =
+            "dashboard.html";
+
+    } else {
+
+        document.getElementById("loginMessage").innerText =
+            "Invalid OTP.";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
