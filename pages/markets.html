@@ -98,7 +98,18 @@ id="quantity"
 value="10"
 min="1"
 >
+<button
+type="button"
+onclick="detectLocation()"
+class="secondary-btn">
 
+📍 Detect My Location
+
+</button>
+
+<p id="locationStatus">
+Location not detected
+</p>
 
 <button
 onclick="findBestMarket()"
@@ -121,241 +132,658 @@ Find Best Market
 
 <script>
 
+const API_BASE_URL = "http://localhost:5000/api";
 
-const markets = [
+let markets = [];
+let crops = [];
 
-{
-name: "Nashik APMC",
-distance: 20,
-price: 3250
-},
 
-{
-name: "Pune APMC",
-distance: 90,
-price: 3350
-},
+/* ==============================
+   LOAD MARKETS FROM DATABASE
+================================ */
 
-{
-name: "Ahmednagar APMC",
-distance: 70,
-price: 3300
-},
+async function loadMarkets() {
 
-{
-name: "Latur APMC",
-distance: 180,
-price: 3450
-}
+    try {
 
-];
+        const response =
+            await fetch(`${API_BASE_URL}/markets`);
 
+        if (!response.ok) {
+            throw new Error("Unable to load markets");
+        }
 
-function findBestMarket() {
+        const result =
+            await response.json();
 
+        markets = result.data;
 
-const price =
-Number(
-document.getElementById("crop").value
-);
+        console.log("Markets loaded:", markets);
 
+        findBestMarket();
 
-const quantity =
-Number(
-document.getElementById("quantity").value
-);
+    } catch (error) {
 
+        console.error("Markets API error:", error);
 
-if(quantity <= 0) {
+        document.getElementById(
+            "marketResults"
+        ).innerHTML = `
 
-alert(
-"Please enter valid quantity."
-);
+            <div class="best-market">
 
-return;
+                <h2>⚠️ Unable to Load Markets</h2>
 
-}
+                <p>
+                    Please make sure the KrushiSetu backend
+                    is running on port 5000.
+                </p>
 
+            </div>
 
-const transportRate = 10;
+        `;
 
-const results =
-markets.map(market => {
-
-
-const gross =
-price *
-quantity;
-
-
-const transport =
-market.distance *
-transportRate;
-
-
-const otherCharges =
-quantity *
-50;
-
-
-const net =
-gross -
-transport -
-otherCharges;
-
-
-return {
-
-...market,
-
-gross,
-transport,
-otherCharges,
-net
-
-};
-
-});
-
-
-results.sort(
-(a,b) => b.net - a.net
-);
-
-
-const best =
-results[0];
-
-
-let html = `
-
-<div class="best-market">
-
-<h2>
-🏆 Recommended Market
-</h2>
-
-<h3>
-${best.name}
-</h3>
-
-<p>
-Distance:
-${best.distance} km
-</p>
-
-<p>
-Transport Cost:
-₹${best.transport.toLocaleString()}
-</p>
-
-<p>
-Expected Net Realization:
-<strong>
-₹${best.net.toLocaleString()}
-</strong>
-</p>
-
-</div>
-
-
-<h2>
-Market Comparison
-</h2>
-
-<div class="table-container">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Market</th>
-
-<th>Distance</th>
-
-<th>Price</th>
-
-<th>Transport</th>
-
-<th>Net Realization</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-`;
-
-
-results.forEach(market => {
-
-
-html += `
-
-<tr>
-
-<td>
-${market.name}
-</td>
-
-<td>
-${market.distance} km
-</td>
-
-<td>
-₹${price.toLocaleString()}
-</td>
-
-<td>
-₹${market.transport.toLocaleString()}
-</td>
-
-<td>
-<strong>
-₹${market.net.toLocaleString()}
-</strong>
-</td>
-
-</tr>
-
-`;
-
-});
-
-
-html += `
-
-</tbody>
-
-</table>
-
-</div>
-
-<p class="data-note">
-
-⚠️ Transport and other charges are currently
-estimated demonstration values. They will be
-replaced with actual market/transport data.
-
-</p>
-
-`;
-
-
-document.getElementById(
-"marketResults"
-).innerHTML =
-html;
+    }
 
 }
 
 
-findBestMarket();
+/* ==============================
+   LOAD CROPS FROM DATABASE
+================================ */
+
+async function loadCrops() {
+
+    try {
+
+        const response =
+            await fetch(`${API_BASE_URL}/crops`);
+
+        if (!response.ok) {
+            throw new Error("Unable to load crops");
+        }
+
+        const result =
+            await response.json();
+
+        crops = result.data;
+
+        const cropSelect =
+            document.getElementById("crop");
+
+        cropSelect.innerHTML = "";
+
+        crops.forEach(crop => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = crop.name;
+
+            option.textContent = crop.name;
+
+            cropSelect.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error("Crops API error:", error);
+
+    }
+
+}
+
+/* ==============================
+   DETECT FARMER LOCATION
+================================ */
+
+let farmerLatitude = null;
+let farmerLongitude = null;
+
+function detectLocation() {
+
+    const status =
+        document.getElementById("locationStatus");
+
+    if (!navigator.geolocation) {
+
+        status.innerText =
+            "❌ Location is not supported by this browser.";
+
+        return;
+    }
+
+    status.innerText =
+        "📍 Detecting your location...";
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            farmerLatitude =
+                position.coords.latitude;
+
+            farmerLongitude =
+                position.coords.longitude;
+
+            status.innerText =
+                `✅ Location detected:
+                ${farmerLatitude.toFixed(5)},
+                ${farmerLongitude.toFixed(5)}`;
+
+            console.log(
+                "Farmer latitude:",
+                farmerLatitude
+            );
+
+            console.log(
+                "Farmer longitude:",
+                farmerLongitude
+            );
+
+        },
+
+        function(error) {
+
+            console.error(
+                "Location error:",
+                error
+            );
+
+            status.innerText =
+                "❌ Unable to detect location. Please allow location access.";
+
+        }
+
+    );
+
+}
+
+/* ==============================
+   CALCULATE DISTANCE
+================================ */
+
+/* ==============================
+   SAVE CALCULATION TO BACKEND
+================================ */
+
+async function saveCalculation(
+    cropId,
+    marketId,
+    quantity,
+    sellingPrice,
+    transportCost
+) {
+
+    const response = await fetch(
+        `${API_BASE_URL}/calculate`,
+        {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+
+                cropId: cropId,
+
+                marketId: marketId,
+
+                quantity: quantity,
+
+                sellingPrice: sellingPrice,
+
+                transportCost: transportCost,
+
+                loadingCost: quantity * 10,
+
+                unloadingCost: quantity * 5,
+
+                marketCharge: quantity * 10,
+
+                commission: quantity * 20,
+
+                otherExpenses: quantity * 5
+
+            })
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(
+            "Unable to save calculation"
+        );
+    }
+
+    return await response.json();
+}
+
+/* ==============================
+   FIND BEST MARKET
+================================ */
+
+async function findBestMarket() {
+
+    const crop =
+        document.getElementById("crop").value;
+
+    const quantity =
+        Number(
+            document.getElementById("quantity").value
+        );
+
+
+    if (!crop) {
+
+        alert("Please select a crop.");
+
+        return;
+
+    }
+
+
+    if (quantity <= 0) {
+
+        alert("Please enter valid quantity.");
+
+        return;
+
+    }
+
+
+    if (markets.length === 0) {
+
+        document.getElementById(
+            "marketResults"
+        ).innerHTML = `
+
+            <div class="best-market">
+
+                <h2>Loading market data...</h2>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    try {
+
+        /* Get crop prices from backend */
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/prices?crop=${encodeURIComponent(crop)}`
+            );
+
+
+        if (!response.ok) {
+            throw new Error("Unable to load crop prices");
+        }
+
+
+        const result =
+            await response.json();
+
+
+        const priceData =
+            result.data;
+
+
+        /* Calculate each market */
+
+        const results = await Promise.all(markets.map(async market => {
+
+                const marketPrice =
+                    priceData.find(
+                        item =>
+                            item.market === market.name
+                    );
+
+
+                const price =
+                    marketPrice
+                        ? Number(marketPrice.price)
+                        : 0;
+                let distance = 0;
+
+const fromLat = farmerLatitude !== null
+    ? farmerLatitude
+    : 20.0059;
+
+const fromLon = farmerLongitude !== null
+    ? farmerLongitude
+    : 73.7910;
+
+const distanceResponse = await fetch(
+    `${API_BASE_URL}/distance?` +
+    `fromLat=${fromLat}&` +
+    `fromLon=${fromLon}&` +
+    `toLat=${market.latitude}&` +
+    `toLon=${market.longitude}`
+);
+
+if (!distanceResponse.ok) {
+    throw new Error("Unable to calculate road distance");
+}
+
+const distanceData = await distanceResponse.json();
+
+distance = Number(distanceData.distanceKm);
+
+               
+                const transportRate =
+                    Number(
+                        market.transport_rate_per_km
+                    );
+
+
+                const transport =
+                    distance *
+                    transportRate *
+                    quantity;
+
+
+                const otherCharges =
+                    quantity * 50;
+
+
+                const gross =
+                    price * quantity;
+
+
+                const net =
+                    gross -
+                    transport -
+                    otherCharges;
+
+
+                return {
+
+                    ...market,
+
+                    price,
+                    distance,
+                    transport,
+                    otherCharges,
+                    gross,
+                    net
+
+                };
+
+            }));
+
+
+        /* Remove markets where price is unavailable */
+
+        const validResults =
+            results.filter(
+                market => market.price > 0
+            );
+
+
+        if (validResults.length === 0) {
+
+            document.getElementById(
+                "marketResults"
+            ).innerHTML = `
+
+                <div class="best-market">
+
+                    <h2>
+                        ⚠️ No price data available
+                    </h2>
+
+                    <p>
+                        No market price is currently
+                        available for ${crop}.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* Highest net realization first */
+
+        validResults.sort(
+            (a, b) => b.net - a.net
+        );
+
+
+        const best =
+    validResults[0];
+
+        const bestPriceData = priceData.find(
+        item => item.market === best.name
+    );
+
+        if (!bestPriceData) {
+        throw new Error(
+        "Market price record not found for " + best.name
+        );
+    }
+
+        if (!bestPriceData.crop_id || !bestPriceData.market_id) {
+    throw new Error(
+        "Crop ID or Market ID is missing"
+    );
+    }
+
+await saveCalculation(
+    Number(bestPriceData.crop_id),
+    Number(bestPriceData.market_id),
+    Number(quantity),
+    Number(best.price),
+    Number(best.transport)
+);
+
+
+
+
+        let html = `
+
+        <div class="best-market">
+
+            <h2>
+                🏆 Recommended Market
+            </h2>
+
+            <h3>
+                ${best.name}
+            </h3>
+
+            <p>
+                Crop:
+                <strong>${crop}</strong>
+            </p>
+
+            <p>
+                Distance:
+                ${best.distance.toFixed(1)} km
+            </p>
+
+            <p>
+                Market Price:
+                ₹${best.price.toLocaleString("en-IN")}
+                / Quintal
+            </p>
+
+            <p>
+                Transport Cost:
+                ₹${Math.round(best.transport)
+                .toLocaleString("en-IN")}
+            </p>
+
+            <p>
+                Expected Net Realization:
+                <strong>
+                    ₹${Math.round(best.net)
+                    .toLocaleString("en-IN")}
+                </strong>
+            </p>
+
+        </div>
+
+
+        <h2>
+            Market Comparison
+        </h2>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Market</th>
+
+                        <th>Distance</th>
+
+                        <th>Price</th>
+
+                        <th>Transport</th>
+
+                        <th>Net Realization</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+        `;
+
+
+        validResults.forEach(market => {
+
+            html += `
+
+                <tr>
+
+                    <td>
+                        ${market.name}
+                    </td>
+
+                    <td>
+                        ${market.distance.toFixed(1)} km
+                    </td>
+
+                    <td>
+                        ₹${market.price
+                        .toLocaleString("en-IN")}
+                    </td>
+
+                    <td>
+                        ₹${Math.round(
+                            market.transport
+                        ).toLocaleString("en-IN")}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ₹${Math.round(
+                                market.net
+                            ).toLocaleString("en-IN")}
+                        </strong>
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+
+        html += `
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <p class="data-note">
+
+            ℹ️ Market and crop-price data are currently
+            retrieved from the KrushiSetu PostgreSQL
+            database. Transport cost is calculated using
+            the market's configured transport rate.
+
+        </p>
+
+        `;
+
+
+        document.getElementById(
+            "marketResults"
+        ).innerHTML = html;
+
+
+    } catch (error) {
+
+        console.error(
+            "Best market calculation error:",
+            error 
+             );
+        alert(
+    "Error: " + error.message
+);
+
+
+        document.getElementById(
+            "marketResults"
+        ).innerHTML = `
+
+            <div class="best-market">
+
+                <h2>
+                    ❌ Unable to calculate
+                </h2>
+
+                <p>
+                    Please check that the backend
+                    server is running.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ==============================
+   START PAGE
+================================ */
+
+async function initializeMarketsPage() {
+
+    await loadCrops();
+
+    await loadMarkets();
+
+}
+
+
+initializeMarketsPage();
 
 </script>
-
 
 </body>
 </html>
