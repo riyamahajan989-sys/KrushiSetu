@@ -8,7 +8,7 @@
    1. GENERAL NAVIGATION
    ========================================================= */
 // KrushiSetu Backend API
-const API_BASE_URL = "http://localhost:5000/api";
+const API_BASE_URL = "https://krushisetu-backend-8b7u.onrender.com/api";
 function findMarket() {
 
     const marketSection =
