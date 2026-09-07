@@ -1,417 +1,989 @@
-<!DOCTYPE html>
-<html lang="en">
+/* =========================================================
+   KRUSHISETU - MAIN JAVASCRIPT
+   Smart Farmer Market Decision Support System
+   ========================================================= */
 
-<head>
 
-<meta charset="UTF-8">
+/* =========================================================
+   1. GENERAL NAVIGATION
+   ========================================================= */
+// KrushiSetu Backend API
+const API_BASE_URL = "http://localhost:5000/api";
+function findMarket() {
 
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+    const marketSection =
+        document.getElementById("markets");
 
-<title>KrushiSetu | Crop Prices</title>
+    if (marketSection) {
 
-<link rel="stylesheet"
-href="../css/style.css">
+        marketSection.scrollIntoView({
+            behavior: "smooth"
+        });
 
-</head>
+    } else {
 
+        window.location.href = "pages/markets.html";
 
-<body>
+    }
 
-
-<header class="navbar">
-
-<div class="logo">
-🌾 KrushiSetu
-</div>
-
-<nav>
-
-<a href="../index.html">
-Home
-</a>
-
-<a href="dashboard.html">
-Dashboard
-</a>
-
-<a href="markets.html">
-Markets
-</a>
-
-<a href="weather.html">
-Weather
-</a>
-
-</nav>
-
-</header>
-
-
-<main class="page-container">
-
-<h1>
-🌾 Current Crop Prices
-</h1>
-
-<p>
-Latest available market information
-</p>
-
-
-<div class="filter-box">
-
-<label>
-Select Crop
-</label>
-
-<select id="cropSelect"
-onchange="loadPrices()">
-
-<option value="onion">
-Onion
-</option>
-
-<option value="tomato">
-Tomato
-</option>
-
-<option value="soybean">
-Soybean
-</option>
-
-<option value="maize">
-Maize
-</option>
-
-</select>
-
-
-<label>
-Select District
-</label>
-
-<select id="districtSelect"
-onchange="loadPrices()">
-
-<option>
-Nashik
-</option>
-
-<option>
-Pune
-</option>
-
-<option>
-Ahmednagar
-</option>
-
-<option>
-Latur
-</option>
-
-</select>
-
-</div>
-
-
-<div class="update-box">
-
-🔄 Last checked:
-
-<span id="updateTime">
---:--
-</span>
-
-<button onclick="loadPrices()"
-class="refresh-btn">
-
-Refresh
-
-</button>
-
-</div>
-
-
-<div class="table-container">
-
-<table>
-
-<thead>
-
-<tr>
-
-<th>Market</th>
-
-<th>Crop</th>
-
-<th>Price ₹/Quintal</th>
-
-<th>Status</th>
-
-</tr>
-
-</thead>
-
-
-<tbody id="priceTable">
-
-</tbody>
-
-</table>
-
-</div>
-
-
-<div class="price-summary">
-
-<div>
-<h3>Highest Price</h3>
-
-<p id="highestPrice">
---
-</p>
-</div>
-
-
-<div>
-<h3>Lowest Price</h3>
-
-<p id="lowestPrice">
---
-</p>
-</div>
-
-
-<div>
-<h3>Average Price</h3>
-
-<p id="averagePrice">
---
-</p>
-</div>
-
-</div>
-
-
-<p class="data-note">
-
-⚠️ Market prices displayed here are demonstration
-data until the live government/agricultural market
-data API is connected.
-
-</p>
-
-
-</main>
-
-
-<script>
-
-const marketData = {
-
-onion: [
-
-{
-market: "Nashik APMC",
-price: 3250
-},
-
-{
-market: "Pune APMC",
-price: 3180
-},
-
-{
-market: "Ahmednagar APMC",
-price: 3300
-},
-
-{
-market: "Latur APMC",
-price: 3050
 }
 
-],
 
+/* =========================================================
+   2. LOGIN
+   ========================================================= */
 
-tomato: [
+function openLogin() {
 
-{
-market: "Nashik APMC",
-price: 2800
-},
+    window.location.href = "pages/login.html";
 
-{
-market: "Pune APMC",
-price: 2950
-},
-
-{
-market: "Ahmednagar APMC",
-price: 2750
-},
-
-{
-market: "Latur APMC",
-price: 2600
 }
 
-],
 
+/* =========================================================
+   3. SHOW CROP PRICES
+   ========================================================= */
 
-soybean: [
+function showPrices() {
 
-{
-market: "Nashik APMC",
-price: 5200
-},
+    const priceSection =
+        document.getElementById("prices");
 
-{
-market: "Pune APMC",
-price: 5350
-},
+    if (priceSection) {
 
-{
-market: "Ahmednagar APMC",
-price: 5500
-},
+        priceSection.scrollIntoView({
+            behavior: "smooth"
+        });
 
-{
-market: "Latur APMC",
-price: 5650
+    } else {
+
+        window.location.href = "pages/prices.html";
+
+    }
+
 }
 
-],
 
+/* =========================================================
+   4. WEATHER PAGE
+   ========================================================= */
 
-maize: [
+function weatherInfo() {
 
-{
-market: "Nashik APMC",
-price: 2300
-},
+    window.location.href =
+        "pages/weather.html";
 
-{
-market: "Pune APMC",
-price: 2400
-},
-
-{
-market: "Ahmednagar APMC",
-price: 2350
-},
-
-{
-market: "Latur APMC",
-price: 2450
 }
 
-]
+
+/* =========================================================
+   5. MARKET PAGE
+   ========================================================= */
+
+function openMarkets() {
+
+    window.location.href =
+        "pages/markets.html";
+
+}
+
+
+/* =========================================================
+   6. PROFILE PAGE
+   ========================================================= */
+
+function openProfile() {
+
+    window.location.href =
+        "pages/profile.html";
+
+}
+
+
+/* =========================================================
+   7. LOCATION DETECTION
+   ========================================================= */
+
+function getLocation() {
+
+    const locationElement =
+        document.getElementById("location");
+
+    if (!navigator.geolocation) {
+
+        if (locationElement) {
+
+            locationElement.innerText =
+                "GPS is not supported by your browser.";
+
+        }
+
+        return;
+
+    }
+
+
+    if (locationElement) {
+
+        locationElement.innerText =
+            "Detecting your location...";
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+
+            if (locationElement) {
+
+                locationElement.innerText =
+                    "Latitude: " +
+                    latitude.toFixed(5) +
+                    " | Longitude: " +
+                    longitude.toFixed(5);
+
+            }
+
+
+            console.log(
+                "Farmer Location:",
+                latitude,
+                longitude
+            );
+
+
+            /*
+             * Later we will send these coordinates
+             * to the backend.
+             *
+             * Example:
+             *
+             * /api/markets?lat=20.00&lon=73.78
+             */
+
+        },
+
+
+        function(error) {
+
+            let message =
+                "Unable to detect location.";
+
+            if (error.code === 1) {
+
+                message =
+                    "Location permission was denied.";
+
+            }
+
+            if (error.code === 2) {
+
+                message =
+                    "Location information is unavailable.";
+
+            }
+
+            if (error.code === 3) {
+
+                message =
+                    "Location request timed out.";
+
+            }
+
+
+            if (locationElement) {
+
+                locationElement.innerText =
+                    message;
+
+            }
+
+        },
+
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   8. CROP DATA
+   DEMONSTRATION DATA ONLY
+   ========================================================= */
+
+const cropPrices = {
+
+    onion: 3250,
+
+    tomato: 2800,
+
+    maize: 2300,
+
+    soybean: 5200
 
 };
 
 
-function loadPrices() {
+/* =========================================================
+   9. MARKET DATA
+   DEMONSTRATION DATA ONLY
+   ========================================================= */
 
-const crop =
-document.getElementById("cropSelect").value;
+const marketDistances = {
 
-const data =
-marketData[crop];
+    nashik: 20,
 
+    pune: 90,
 
-const table =
-document.getElementById("priceTable");
+    ahmednagar: 70,
 
-table.innerHTML = "";
+    latur: 180
 
-
-const prices =
-data.map(item => item.price);
-
-
-const highest =
-Math.max(...prices);
-
-const lowest =
-Math.min(...prices);
-
-const average =
-prices.reduce((a,b) => a+b,0)
-/
-prices.length;
+};
 
 
-data.forEach(item => {
+/* =========================================================
+   10. PROFIT / NET REALIZATION CALCULATOR
+   ========================================================= */
 
-const row =
-document.createElement("tr");
+function calculateProfit() {
 
-let status =
-"Normal";
 
-if(item.price === highest) {
+    const cropElement =
+        document.getElementById("crop");
 
-status =
-"🏆 Highest";
+    const quantityElement =
+        document.getElementById("quantity");
+
+    const marketElement =
+        document.getElementById("market");
+
+
+    if (!cropElement ||
+        !quantityElement ||
+        !marketElement) {
+
+        return;
+
+    }
+
+
+    const crop =
+        cropElement.value;
+
+
+    const quantity =
+        Number(quantityElement.value);
+
+
+    const market =
+        marketElement.value;
+
+
+    if (!quantity ||
+        quantity <= 0) {
+
+        alert(
+            "Please enter a valid quantity."
+        );
+
+        return;
+
+    }
+
+
+    const price =
+        Number(cropElement.selectedOptions[0].dataset.price)
+        || cropPrices[crop]
+        || Number(cropElement.value);
+
+
+    const distance =
+        Number(marketElement.selectedOptions[0].dataset.distance)
+        || marketDistances[market]
+        || Number(marketElement.value);
+
+
+    /*
+     * Demonstration transport rate.
+     *
+     * This will later be replaced with
+     * actual transportation calculation.
+     */
+
+    const transportRate =
+        10;
+
+
+    const transportCost =
+        distance *
+        transportRate;
+
+
+    const grossRevenue =
+        price *
+        quantity;
+
+
+    /*
+     * Demonstration additional charges.
+     *
+     * Later these will come from actual
+     * market/mandi information.
+     */
+
+    const loadingCost =
+        quantity * 20;
+
+
+    const unloadingCost =
+        quantity * 20;
+
+
+    const marketCharges =
+        quantity * 10;
+
+
+    const commission =
+        grossRevenue * 0.01;
+
+
+    const totalExpenses =
+        transportCost +
+        loadingCost +
+        unloadingCost +
+        marketCharges +
+        commission;
+
+
+    const netRealization =
+        grossRevenue -
+        totalExpenses;
+
+
+    const result =
+        document.getElementById("result");
+
+
+    if (!result) {
+
+        return;
+
+    }
+
+
+    result.innerHTML = `
+
+        <h3>💰 Selling Calculation</h3>
+
+        <p>
+            <strong>Crop:</strong>
+            ${crop}
+        </p>
+
+        <p>
+            <strong>Quantity:</strong>
+            ${quantity} Quintal
+        </p>
+
+        <p>
+            <strong>Market:</strong>
+            ${market}
+        </p>
+
+        <p>
+            <strong>Market Price:</strong>
+            ₹${price.toLocaleString("en-IN")}
+            / Quintal
+        </p>
+
+        <hr>
+
+        <p>
+            <strong>Gross Revenue:</strong>
+            ₹${grossRevenue.toLocaleString("en-IN")}
+        </p>
+
+        <p>
+            <strong>Transport Cost:</strong>
+            ₹${transportCost.toLocaleString("en-IN")}
+        </p>
+
+        <p>
+            <strong>Loading:</strong>
+            ₹${loadingCost.toLocaleString("en-IN")}
+        </p>
+
+        <p>
+            <strong>Unloading:</strong>
+            ₹${unloadingCost.toLocaleString("en-IN")}
+        </p>
+
+        <p>
+            <strong>Market Charges:</strong>
+            ₹${marketCharges.toLocaleString("en-IN")}
+        </p>
+
+        <p>
+            <strong>Commission:</strong>
+            ₹${Math.round(commission).toLocaleString("en-IN")}
+        </p>
+
+        <hr>
+
+        <h2>
+            🏆 Expected Net Realization:
+            ₹${Math.round(netRealization).toLocaleString("en-IN")}
+        </h2>
+
+        <small>
+            ⚠️ This is an estimated calculation.
+            Actual realization may vary.
+        </small>
+
+    `;
+
+
+    result.style.display =
+        "block";
 
 }
 
 
-row.innerHTML = `
+/* =========================================================
+   11. TRANSPORT CALCULATOR
+   ========================================================= */
 
-<td>${item.market}</td>
+function transportCalculator() {
 
-<td>
-${crop.toUpperCase()}
-</td>
-
-<td>
-₹${item.price.toLocaleString()}
-</td>
-
-<td>
-${status}
-</td>
-
-`;
-
-table.appendChild(row);
-
-});
+    const distance =
+        Number(
+            prompt(
+                "Enter distance to market in kilometres:"
+            )
+        );
 
 
-document.getElementById(
-"highestPrice"
-).innerText =
-"₹" + highest.toLocaleString();
+    if (!distance ||
+        distance <= 0) {
+
+        alert(
+            "Please enter a valid distance."
+        );
+
+        return;
+
+    }
 
 
-document.getElementById(
-"lowestPrice"
-).innerText =
-"₹" + lowest.toLocaleString();
+    const rate =
+        10;
 
 
-document.getElementById(
-"averagePrice"
-).innerText =
-"₹" + Math.round(average).toLocaleString();
+    const cost =
+        distance * rate;
 
 
-document.getElementById(
-"updateTime"
-).innerText =
-new Date().toLocaleString();
+    alert(
+
+        "Estimated Transport Cost\n\n" +
+
+        "Distance: " +
+        distance +
+        " km\n" +
+
+        "Estimated Rate: ₹" +
+        rate +
+        "/km\n\n" +
+
+        "Estimated Cost: ₹" +
+        cost.toLocaleString("en-IN")
+
+    );
 
 }
 
 
-loadPrices();
+/* =========================================================
+   12. SAVE FARMER PROFILE
+   ========================================================= */
 
-</script>
+function saveFarmerProfile() {
 
 
-</body>
-</html>
+    const name =
+        document.getElementById(
+            "farmerName"
+        )?.value;
+
+
+    const mobile =
+        document.getElementById(
+            "mobileNumber"
+        )?.value;
+
+
+    const village =
+        document.getElementById(
+            "village"
+        )?.value;
+
+
+    const district =
+        document.getElementById(
+            "district"
+        )?.value;
+
+
+    const language =
+        document.getElementById(
+            "language"
+        )?.value;
+
+
+    if (!name) {
+
+        alert(
+            "Please enter farmer name."
+        );
+
+        return;
+
+    }
+
+
+    const profile = {
+
+        name: name,
+
+        mobile: mobile,
+
+        village: village,
+
+        district: district,
+
+        language: language
+
+    };
+
+
+    localStorage.setItem(
+
+        "krushiProfile",
+
+        JSON.stringify(profile)
+
+    );
+
+
+    const message =
+        document.getElementById(
+            "saveMessage"
+        );
+
+
+    if (message) {
+
+        message.innerText =
+            "✅ Profile saved successfully.";
+
+    }
+
+}
+
+
+/* =========================================================
+   13. LOAD FARMER PROFILE
+   ========================================================= */
+
+function loadFarmerProfile() {
+
+
+    const savedProfile =
+        localStorage.getItem(
+            "krushiProfile"
+        );
+
+
+    if (!savedProfile) {
+
+        return;
+
+    }
+
+
+    const profile =
+        JSON.parse(savedProfile);
+
+
+    const name =
+        document.getElementById(
+            "farmerName"
+        );
+
+
+    const mobile =
+        document.getElementById(
+            "mobileNumber"
+        );
+
+
+    const village =
+        document.getElementById(
+            "village"
+        );
+
+
+    const district =
+        document.getElementById(
+            "district"
+        );
+
+
+    const language =
+        document.getElementById(
+            "language"
+        );
+
+
+    if (name)
+        name.value =
+            profile.name || "";
+
+
+    if (mobile)
+        mobile.value =
+            profile.mobile || "";
+
+
+    if (village)
+        village.value =
+            profile.village || "";
+
+
+    if (district)
+        district.value =
+            profile.district || "";
+
+
+    if (language)
+        language.value =
+            profile.language || "";
+
+}
+
+
+/* =========================================================
+   14. LOGIN CHECK
+   ========================================================= */
+
+function checkLogin() {
+
+
+    const loggedIn =
+        localStorage.getItem(
+            "krushiLoggedIn"
+        );
+
+
+    return loggedIn === "true";
+
+}
+
+
+/* =========================================================
+   15. LOGOUT
+   ========================================================= */
+
+function logout() {
+
+
+    localStorage.removeItem(
+        "krushiLoggedIn"
+    );
+
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* =========================================================
+   16. CURRENT DATE & TIME
+   ========================================================= */
+
+function showCurrentDateTime() {
+
+
+    const element =
+        document.getElementById(
+            "updateTime"
+        );
+
+
+    if (!element) {
+
+        return;
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    element.innerText =
+        now.toLocaleString(
+            "en-IN",
+            {
+                dateStyle: "medium",
+                timeStyle: "short"
+            }
+        );
+
+}
+
+
+/* =========================================================
+   17. WEATHER - API READY FUNCTION
+   ========================================================= */
+
+async function getLiveWeather(
+    latitude,
+    longitude
+) {
+
+
+    /*
+     * IMPORTANT:
+     *
+     * Do NOT put a private API key directly
+     * into this JavaScript file.
+     *
+     * In the final project:
+     *
+     * Browser
+     *     ↓
+     * Node.js Backend
+     *     ↓
+     * Weather API
+     *
+     */
+
+
+    console.log(
+        "Weather coordinates:",
+        latitude,
+        longitude
+    );
+
+
+    /*
+     * Future example:
+     *
+     * const response =
+     * await fetch(
+     * `/api/weather?lat=${latitude}&lon=${longitude}`
+     * );
+     *
+     * const data =
+     * await response.json();
+     *
+     * updateWeatherUI(data);
+     */
+
+}
+
+
+/* =========================================================
+   18. GET WEATHER LOCATION
+   ========================================================= */
+
+function getWeatherLocation() {
+
+
+    if (!navigator.geolocation) {
+
+        alert(
+            "GPS is not supported."
+        );
+
+        return;
+
+    }
+
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+
+            const latitude =
+                position.coords.latitude;
+
+
+            const longitude =
+                position.coords.longitude;
+
+
+            const location =
+                document.getElementById(
+                    "location"
+                );
+
+
+            if (location) {
+
+                location.innerText =
+
+                    "Latitude: " +
+                    latitude.toFixed(4) +
+
+                    " | Longitude: " +
+                    longitude.toFixed(4);
+
+            }
+
+
+            getLiveWeather(
+                latitude,
+                longitude
+            );
+
+
+        },
+
+
+        function() {
+
+            alert(
+                "Unable to detect your location."
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   19. REFRESH DATA
+   ========================================================= */
+
+function refreshData() {
+
+
+    showCurrentDateTime();
+
+
+    /*
+     * Later:
+     *
+     * refresh market prices
+     * refresh weather
+     * refresh market distances
+     */
+
+
+    console.log(
+        "KrushiSetu data refresh requested."
+    );
+
+}
+
+
+/* =========================================================
+   20. LANGUAGE SELECTION
+   ========================================================= */
+
+function changeLanguage(language) {
+
+
+    localStorage.setItem(
+        "krushiLanguage",
+        language
+    );
+
+
+    console.log(
+        "Selected language:",
+        language
+    );
+
+
+    /*
+     * Later we can implement
+     * complete Marathi / Hindi /
+     * English translation.
+     */
+
+}
+
+
+/* =========================================================
+   21. INITIALIZATION
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+
+        console.log(
+            "🌾 KrushiSetu initialized successfully."
+        );
+
+
+        /*
+         * Load saved profile if profile
+         * page is opened.
+         */
+
+        loadFarmerProfile();
+
+
+        /*
+         * Show current date/time wherever
+         * updateTime exists.
+         */
+
+        showCurrentDateTime();
+
+
+        /*
+         * Automatically detect location
+         * if location element exists.
+         */
+
+        const locationElement =
+            document.getElementById(
+                "location"
+            );
+
+
+        if (locationElement) {
+
+            getLocation();
+
+        }
+
+
+    }
+);
+    
